@@ -137,7 +137,9 @@ a {
   top: 30px;
   left: 50%;
   transform: translateX(-50%);
-  color: #F6C390;
+  color: #EC7263;
+  font-family: 'Shadows Into Light', cursive;
+  font-size: 35px;
 }
 .container-fluid {
   position: relative;
