@@ -100,6 +100,7 @@ table tr:nth-child(1) {
   background: #4d7ef7;
   color: #fff;
 }
+/*
 a {
   color: #4d7ef7;
   text-decoration: none;
@@ -111,5 +112,5 @@ a.add_post_link {
   text-transform: uppercase;
   font-size: 12px;
   font-weight: bold;
-}
+}*/
 </style>

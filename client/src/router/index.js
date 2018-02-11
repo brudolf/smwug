@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+import Chat from '@/components/Chat'
 import Posts from '@/components/Posts'
 import addpost from '@/components/AddPost'
 import editpost from '@/components/EditPost'
@@ -34,6 +35,11 @@ export default new Router({
       path: '/login',
       component: login,
       name: 'Login'
+    },
+    {
+      path: '/chat',
+      component: Chat,
+      name: 'Chat'
     },
     {
       path: '/posts',

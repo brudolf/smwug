@@ -16,7 +16,7 @@ export default {
       localStorage.setItem('id_token', response.data.id_token)
       this.user.authenticated = true
       if (redirect) {
-        router.push({ name: 'Posts' })
+        router.push({ name: redirect })
       }
     } else {
       context.error = response.data.error

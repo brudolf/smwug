@@ -64,7 +64,7 @@ export default {
         email: this.credentials.email,
         password: this.credentials.password
       }
-      auth.logIn(this, credentials, 'Posts')
+      auth.logIn(this, credentials, 'Chat')
     }
   },
   beforeRouteEnter (to, from, next) {
