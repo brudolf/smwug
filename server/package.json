@@ -15,12 +15,13 @@
     "body-parser": "^1.18.1",
     "cors": "^2.8.4",
     "express": "^4.15.4",
+    "express-jwt": "*",
+    "express-validator": "*",
+    "jsonwebtoken": "*",
     "mongoose": "^4.13.6",
     "morgan": "^1.8.2",
-    "nodemon": "^1.12.1",
     "multer": "*",
-    "express-validator": "*",
-    "express-jwt": "*",
-    "jsonwebtoken": "*"
+    "nodemon": "^1.12.1",
+    "socket.io": "^2.0.4"
   }
 }
