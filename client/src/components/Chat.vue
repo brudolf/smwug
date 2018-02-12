@@ -1,12 +1,11 @@
 <template>
   <b-container>
+    <span class="greeting">Hi, {{ loggedUser.firstname }}</span>
     <b-row>
         <b-col cols="2">
           <div class="userlist">
             <ul>
-              <li>User 1</li>
-              <li>User 1</li>
-              <li>User 1</li>
+              <li v-for="user in users">{{ user.name }}</li>
             </ul>
           </div>
         </b-col>
@@ -14,7 +13,7 @@
           <div class="chatwindow">
             <div class="send">
               <input type="text" name="" value="">
-              <button type="button" name="button">Send</button>
+              <button @click="load()" type="button" name="button">Send</button>
             </div>
           </div>
         </b-col>
@@ -26,13 +25,21 @@
 import auth from '../auth'
 
 export default {
-
+  name: 'chat',
   data () {
     return {
-
+      users: [],
+      loggedUser: {}
     }
   },
   methods: {
+    load () {
+      this.users = this.$store.state.userlist
+      this.loggedUser = this.$store.state.loggedUser
+    }
+  },
+  created () {
+    this.load()
   },
   beforeRouteEnter (to, from, next) {
     if (auth.user.authenticated) {
@@ -73,5 +80,8 @@ export default {
       width: auto;
     }
   }
+}
+.greeting {
+  color: #fff;
 }
 </style>

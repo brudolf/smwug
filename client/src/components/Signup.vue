@@ -96,7 +96,7 @@ export default {
         firstname: this.credentials.firstname,
         lastname: this.credentials.lastname
       }
-      auth.signUp(this, credentials, 'Posts')
+      auth.signUp(this, credentials, 'Chat')
     }
   },
   beforeRouteEnter (to, from, next) {

@@ -28,7 +28,11 @@ router.post('/login', function(req, res, next) {
         if (isMatch) {
           res.status(200).send({
             id_token: createToken(user),
-            'success': true
+            'success': true,
+            username: {
+              firstname: user.firstname,
+              lastname: user.lastname
+            }
           })
         } else {
           res.status(200).send({
@@ -70,7 +74,11 @@ router.post('/create' ,function(req, res, next) {
         console.log(user);
         res.status(201).send({
           id_token: createToken(newUser),
-          'success': true
+          'success': true,
+          username: {
+            firstname: user.firstname,
+            lastname: user.lastname
+          }
         });
       });
     } else {
