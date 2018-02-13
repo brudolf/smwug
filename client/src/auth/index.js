@@ -1,6 +1,6 @@
 import router from '../router'
 import UserService from '@/services/UserService'
-import { store } from '../store/store'
+// import { store } from '../store/store'
 
 export default {
 
@@ -15,7 +15,8 @@ export default {
 
     if (response.data.success) {
       localStorage.setItem('id_token', response.data.id_token)
-      store.commit('setLoggedUser', response.data.username)
+      // store.commit('setLoggedUser', response.data.username)
+      localStorage.setItem('user', JSON.stringify(response.data.username))
       this.user.authenticated = true
       if (redirect) {
         router.push({ name: redirect })
@@ -42,7 +43,9 @@ export default {
     })
     if (response.data.success) {
       localStorage.setItem('id_token', response.data.id_token)
-      store.commit('setLoggedUser', response.data.username)
+      // store.commit('setLoggedUser', response.data.username)
+      localStorage.setItem('user', JSON.stringify(response.data.username))
+      // this.$socket.emit('addUser', this.loggedUser)
       this.user.authenticated = true
       if (redirect) {
         router.push({ name: redirect })

@@ -1,13 +1,16 @@
 import Vue from 'vue'
-import { store } from './store/store'
 import App from './App'
+import { store } from './store/store'
 import router from './router'
 import VueSweetalert2 from 'vue-sweetalert2'
 import BootstrapVue from 'bootstrap-vue'
 import auth from './auth'
-Vue.use(BootstrapVue)
+import VueSocketio from 'vue-socket.io'
+Vue.use(VueSocketio, 'http://localhost:8081', store)
 
+Vue.use(BootstrapVue)
 Vue.use(VueSweetalert2)
+
 Vue.config.productionTip = false
 
 // Check the user's auth status when the app starts

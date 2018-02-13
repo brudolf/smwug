@@ -5,15 +5,15 @@
         <b-col cols="2">
           <div class="userlist">
             <ul>
-              <li v-for="user in users">{{ user.name }}</li>
+              <li v-for="user in users">{{ user.userdata.firstname }}</li>
             </ul>
           </div>
         </b-col>
         <b-col cols="10">
           <div class="chatwindow">
             <div class="send">
-              <input type="text" name="" value="">
-              <button @click="load()" type="button" name="button">Send</button>
+              <input type="text" v-model="message" value="">
+              <button @click="sendMessage()" type="button" name="button">Send</button>
             </div>
           </div>
         </b-col>
@@ -28,18 +28,47 @@ export default {
   name: 'chat',
   data () {
     return {
+      message: '',
       users: [],
-      loggedUser: {}
+      loggedUser: ''
     }
   },
   methods: {
-    load () {
-      this.users = this.$store.state.userlist
-      this.loggedUser = this.$store.state.loggedUser
+    sendMessage () {
+      this.$socket.emit('message', {
+        username: this.loggedUser.firstname,
+        message: this.message
+      })
+      this.message = ''
     }
   },
   created () {
-    this.load()
+    if (!this.loggedUser) {
+      this.loggedUser = JSON.parse(localStorage.getItem('user'))
+    }
+    console.log(this.$store.getters.isConnect)
+  },
+  mounted () {
+    // console.log(this.loggedUser)
+    this.$socket.emit('addUser', this.loggedUser)
+
+    async function yo (str) {
+      let x = await str.getters.getUserList[0]
+      return x
+    }
+    this.users = yo(this.$store)
+    /*
+    const timer = setInterval(() => {
+      this.users = this.$store.getters.getUserList[0]
+      console.log('brekekee')
+      if (this.users !== undefined) {
+        clearInterval(timer)
+      }
+    }, 2)
+    */
+    // console.log(this.$store.getters.getUserList)
+    // this.users = this.$store.getters.getUserList[0]
+    // console.log(this.users)
   },
   beforeRouteEnter (to, from, next) {
     if (auth.user.authenticated) {

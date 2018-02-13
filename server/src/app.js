@@ -45,16 +45,16 @@ app.use(expressValidator({
 var userlist = []
 
 io.on('connection', (socket) => {
+  socket.on('addUser', (data) => {
+    userlist.push({ socketId: socket.id, userdata: data })
+    socket.emit('listupdate', userlist)
+  })
 
   // New user connected. Add User to userlist array
-  socket.on('addUser', (userdata) => {
-    userlist.push({
-      userdata: userdata,
-      socketId: socket.id
-    })
-  })
-  // Send userlist array back
-  socket.emit('refreshList', userlist)
+  // socket.on('addUser', (userdata) => {
+
+    // Send userlist array back
+  // })
 
   console.log(userlist)
 
@@ -62,7 +62,7 @@ io.on('connection', (socket) => {
     console.log(data)
   })
 
-  socket.on('disconnect',(socket) => {
+  socket.on('disconnect', (socket) => {
     console.log(socket)
     // socket.emit('disconnected')
   })
