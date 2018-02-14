@@ -50,7 +50,6 @@ io.on('connection', (socket) => {
   socket.on('addUser', (username) => {
     console.log('%s has joined the chat!', JSON.stringify(username.firstname))
 
-    // onlineUsers[socket.id] = username.firstname
     var newUser = {
       socketId: socket.id,
       username: username,

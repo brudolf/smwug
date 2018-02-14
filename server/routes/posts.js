@@ -2,8 +2,7 @@ var express = require('express'),
 		router 	= express.Router(),
 		jwt     = require('express-jwt'),
 		config  = require('../config'),
-		Post 		= require("../models/post");
-
+		Post 		= require('../models/post');
 
 var jwtCheck = jwt({
   secret: config.secret

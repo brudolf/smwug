@@ -7,7 +7,7 @@ var express = require('express'),
     User   = require("../models/user");
 
 function createToken(user) {
-  return jwt.sign(user.toObject(), config.secret, { expiresIn: 60*60 });
+  return jwt.sign(user.toObject(), config.secret, { expiresIn: 10 });// 60*60 });
 }
 
 router.get('/', (req, res) => {
