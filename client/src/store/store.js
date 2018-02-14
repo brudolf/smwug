@@ -35,13 +35,14 @@ export const store = new Vuex.Store({
       state.connect = false
     },
     SOCKET_CONNECTUSER (state, user) {
-      // state.userlist = list
       state.userlist.push(user[0])
       state.userConnected = true
     },
     SOCKET_USERLEFT (state, user) {
-      console.log(user)
-      state.userlist.$remove(user[0])
+      state.userlist = state.userlist.filter(obj => obj.socketId !== user[0].socketId)
+    },
+    SOCKET_USERLIST (state, list) {
+      state.userlist = list[0]
     },
     SOCKET_USER_MESSAGE (state, message) {
       state.message = message

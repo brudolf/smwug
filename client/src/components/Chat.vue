@@ -35,10 +35,10 @@ export default {
   },
   methods: {
     sendMessage () {
-      // this.$socket.emit('message', {
-      //   username: this.loggedUser.firstname,
-      //   message: this.message
-      // })
+      this.$socket.emit('message', {
+        username: this.loggedUser.firstname,
+        message: this.message
+      })
       this.message = ''
       this.$socket.emit('disconnect', this.loggedUser)
     }
@@ -50,14 +50,14 @@ export default {
   },
   watch: {
     list (newList, oldList) {
-      console.log('changed')
       this.users = this.$store.getters.getUserList
-      console.log(this.users)
+      console.log('changed')
     }
   },
   mounted () {
     // Get Username from LocalStorage
     this.loggedUser = JSON.parse(localStorage.getItem('user'))
+
     // Get userlist from Vuex Store
     this.users = this.$store.getters.getUserList
 
