@@ -5,7 +5,7 @@
         <b-col cols="2">
           <div class="userlist">
             <ul>
-              <li v-for="user in users">{{ user.userdata.firstname }}</li>
+              <li v-for="user in users">{{ user.username.firstname }}</li>
             </ul>
           </div>
         </b-col>
@@ -35,40 +35,35 @@ export default {
   },
   methods: {
     sendMessage () {
-      this.$socket.emit('message', {
-        username: this.loggedUser.firstname,
-        message: this.message
-      })
+      // this.$socket.emit('message', {
+      //   username: this.loggedUser.firstname,
+      //   message: this.message
+      // })
       this.message = ''
+      this.$socket.emit('disconnect', this.loggedUser)
     }
   },
-  created () {
-    if (!this.loggedUser) {
-      this.loggedUser = JSON.parse(localStorage.getItem('user'))
+  computed: {
+    list () {
+      return this.$store.getters.getUserList
     }
-    console.log(this.$store.getters.isConnect)
+  },
+  watch: {
+    list (newList, oldList) {
+      console.log('changed')
+      this.users = this.$store.getters.getUserList
+      console.log(this.users)
+    }
   },
   mounted () {
-    // console.log(this.loggedUser)
-    this.$socket.emit('addUser', this.loggedUser)
+    // Get Username from LocalStorage
+    this.loggedUser = JSON.parse(localStorage.getItem('user'))
+    // Get userlist from Vuex Store
+    this.users = this.$store.getters.getUserList
 
-    async function yo (str) {
-      let x = await str.getters.getUserList[0]
-      return x
+    if (!this.$store.getters.isUserConnected) {
+      this.$socket.emit('addUser', this.loggedUser)
     }
-    this.users = yo(this.$store)
-    /*
-    const timer = setInterval(() => {
-      this.users = this.$store.getters.getUserList[0]
-      console.log('brekekee')
-      if (this.users !== undefined) {
-        clearInterval(timer)
-      }
-    }, 2)
-    */
-    // console.log(this.$store.getters.getUserList)
-    // this.users = this.$store.getters.getUserList[0]
-    // console.log(this.users)
   },
   beforeRouteEnter (to, from, next) {
     if (auth.user.authenticated) {

@@ -8,14 +8,19 @@ export const store = new Vuex.Store({
     userlist: [],
     loggedUser: {},
     connect: false,
+    userConnected: false,
     message: null
   },
   getters: {
     getUserList (state) {
-      return JSON.parse(JSON.stringify(state.userlist))
+      // return JSON.parse(JSON.stringify(state.userlist))
+      return state.userlist
     },
     isConnect (state) {
       return state.connect
+    },
+    isUserConnected (state) {
+      return state.userConnected
     }
   },
   mutations: {
@@ -24,19 +29,29 @@ export const store = new Vuex.Store({
     },
     SOCKET_CONNECT (state, status) {
       state.connect = true
+      console.log('most csatlakozott')
     },
-    SOCKET_LISTUPDATE (state, list) {
-      state.userlist = list
+    SOCKET_DISCONNECT (state, status) {
+      state.connect = false
+    },
+    SOCKET_CONNECTUSER (state, user) {
+      // state.userlist = list
+      state.userlist.push(user[0])
+      state.userConnected = true
+    },
+    SOCKET_USERLEFT (state, user) {
+      console.log(user)
+      state.userlist.$remove(user[0])
     },
     SOCKET_USER_MESSAGE (state, message) {
       state.message = message
     }
   },
   actions: {
-    otherAction: (context, type) => {
+    otherAction (context, type) {
       return true
     },
-    socket_listUpdateAction: (context, list) => {
+    socket_listUpdateAction (context, list) {
       // context.dispatch('newMessage', message)
       context.commit('SOCKET_LISTUPDATE', list)
     }
