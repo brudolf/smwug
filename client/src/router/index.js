@@ -11,6 +11,8 @@ import home from '@/components/Home'
 import notfound from '@/components/Notfound'
 import VueResource from 'vue-resource'
 import Vuelidate from 'vuelidate'
+import { store } from '../store/store'
+import VueSocketio from 'vue-socket.io'
 
 Vue.use(Vuelidate)
 Vue.use(VueResource)
@@ -39,7 +41,13 @@ export default new Router({
     {
       path: '/chat',
       component: Chat,
-      name: 'Chat'
+      name: 'Chat',
+      beforeEnter (to, from, next) {
+        if (!Vue.prototype.$socket) {
+          Vue.use(VueSocketio, 'http://localhost:8081', store)
+        }
+        next()
+      }
     },
     {
       path: '/posts',

@@ -35,13 +35,18 @@ export default {
   },
   methods: {
     sendMessage () {
+      /*
       this.$socket.emit('message', {
         username: this.loggedUser.firstname,
         message: this.message
       })
       this.message = ''
-      this.$socket.emit('disconnect', this.loggedUser)
+      */
+      // this.$socket.emit('disconnect', this.loggedUser)
     }
+  },
+  created () {
+    // this.$socket.emit('conn')
   },
   computed: {
     list () {

@@ -45,40 +45,48 @@ app.use(expressValidator({
 var onlineUsers = []
 
 io.on('connection', (socket) => {
-
+  // Get All the Users
   io.emit('userlist', onlineUsers)
+  // New User Connecting..
   socket.on('addUser', (username) => {
     console.log('%s has joined the chat!', JSON.stringify(username.firstname))
-
     var newUser = {
       socketId: socket.id,
       username: username,
       timeStamp: new Date
     }
+    // Add User to OnlineUsers list
     onlineUsers.push(newUser)
+
+    // Send New User to Client
     io.emit('connectuser', newUser)
+    // io.emit('userlist', onlineUsers)
+  })
+
+
+  socket.on('disc', () => {
+    // console.log('disconnect')
+    socket.disconnect()
   })
   socket.on('disconnect', () => {
-      var username = onlineUsers[socket.id];
-      // leftUser = onlineUsers.filter(obj => obj.socketId === socket.id )
-      // console.log('%s has disconnected from the chat.', JSON.stringify(username));
-
+      // var username = onlineUsers[socket.id];
       // Recalculate Online Users
       onlineUsers = onlineUsers.filter(obj => obj.socketId !== socket.id )
-
+      // console.log(onlineUsers)
       io.emit('userleft', {
         socketId: socket.id,
         timestamp: new Date
       });
-  });
+      io.emit('userlist', onlineUsers)
+  })
 
   socket.on('message', (data) => {
     console.log(data)
   })
-  io.on('disconnect', (socket) => {
-    console.log(socket + ' disconnected')
-    // socket.emit('disconnected')
-  })
+  // io.on('disconnect', (socket) => {
+  //  console.log(socket + ' disconnected')
+  //  socket.emit('disconnected')
+  // })
 });
 
 app.use('/', posts);

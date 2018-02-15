@@ -6,8 +6,8 @@ import VueSweetalert2 from 'vue-sweetalert2'
 import BootstrapVue from 'bootstrap-vue'
 import auth from './auth'
 
-import VueSocketio from 'vue-socket.io'
-Vue.use(VueSocketio, 'http://localhost:8081', store)
+// import VueSocketio from 'vue-socket.io'
+// Vue.use(VueSocketio, 'http://localhost:8081', store)
 
 Vue.use(BootstrapVue)
 Vue.use(VueSweetalert2)

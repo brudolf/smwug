@@ -33,6 +33,8 @@ export const store = new Vuex.Store({
     },
     SOCKET_DISCONNECT (state, status) {
       state.connect = false
+      // this.$socket.emit('disc')
+      console.log('most lecsatlakozott')
     },
     SOCKET_CONNECTUSER (state, user) {
       state.userlist.push(user[0])

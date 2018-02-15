@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <div id="slide-menu" class="slide-menu" v-bind:class="{ open: isOpen }">
+    <div id="slide-menu" class="slide-menu" v-bind:class="{ open: isNavOpen }">
       <nav>
         <ul>
           <li><router-link v-if="!user.authenticated" v-bind:to="{ name: 'Signup' }">Sign Up</router-link></li>
@@ -30,16 +30,23 @@
     data () {
       return {
         user: auth.user,
-        isOpen: false,
+        isNavOpen: false,
         marginOnMain: '0'
       }
     },
     methods: {
       logOut () {
+        localStorage.clear()
+        if (this.$socket) {
+          this.$socket.emit('disc')
+        }
+        // delete this.$socket
+        // this.$socket.destroy()
         auth.logout()
+        // this.$socket = {}
       },
       navToggle () {
-        this.isOpen = !this.isOpen
+        this.isNavOpen = !this.isNavOpen
         if (this.marginOnMain === '0') {
           this.marginOnMain = '250px'
         } else {
@@ -47,8 +54,8 @@
         }
       },
       navClose () {
-        if (this.isOpen) {
-          this.isOpen = false
+        if (this.isNavOpen) {
+          this.isNavOpen = false
           this.marginOnMain = '0'
         }
       }
