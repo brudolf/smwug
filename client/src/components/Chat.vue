@@ -23,6 +23,7 @@
 
 <script>
 import auth from '../auth'
+import io from 'socket.io-client'
 
 export default {
   name: 'chat',
@@ -42,11 +43,22 @@ export default {
       })
       this.message = ''
       */
-      // this.$socket.emit('disconnect', this.loggedUser)
     }
   },
   created () {
-    // this.$socket.emit('conn')
+    // Get Username from LocalStorage
+    this.loggedUser = JSON.parse(localStorage.getItem('user'))
+    // Commit Socket instance to store
+    this.$store.commit('setSocket', io('http://localhost:8081', { autoConnect: false }))
+
+    // If not Connected connect and add user to list
+    if (!this.$store.getters.isUserConnected) {
+      this.$store.getters.socket.connect()
+      this.$store.commit('userConnected')
+      this.$store.getters.socket.emit('addUser', this.loggedUser)
+    }
+    // Get all the users from server
+    this.users = this.$store.getters.getUserList
   },
   computed: {
     list () {
@@ -56,19 +68,17 @@ export default {
   watch: {
     list (newList, oldList) {
       this.users = this.$store.getters.getUserList
-      console.log('changed')
     }
   },
   mounted () {
-    // Get Username from LocalStorage
-    this.loggedUser = JSON.parse(localStorage.getItem('user'))
-
-    // Get userlist from Vuex Store
-    this.users = this.$store.getters.getUserList
-
-    if (!this.$store.getters.isUserConnected) {
-      this.$socket.emit('addUser', this.loggedUser)
-    }
+    this.$store.getters.socket.on('connectuser', (user) => {
+      console.log(user)
+      // !!!Ellenőrizni mindkét oldalon ( server, kliens ) hogy hozzá lett -e már adva a user!!!
+      this.$store.commit('newUserConnect', user)
+    })
+    this.$store.getters.socket.on('userlist', (userlist) => {
+      this.$store.commit('setUserList', userlist)
+    })
   },
   beforeRouteEnter (to, from, next) {
     if (auth.user.authenticated) {

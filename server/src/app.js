@@ -7,14 +7,12 @@ const multer = require('multer')
 const upload = multer({dest: './uploads'})
 const expressValidator = require('express-validator')
 
-const mongodb_conn_module = require('./mongodbConnModule');
-var db = mongodb_conn_module.connect();
+const mongodb_conn_module = require('./mongodbConnModule')
+var db = mongodb_conn_module.connect()
 
 const app = express()
 const server = app.listen(process.env.PORT || 8081)
-// var server = require('http').createServer(app);
-// var server = app.listen()
-var io = require('socket.io').listen(server);
+var io = require('socket.io').listen(server)
 
 const posts = require('../routes/posts')
 const users = require('../routes/users')
@@ -29,26 +27,31 @@ app.use(expressValidator({
   errorFormatter: function(param, msg, value) {
       var namespace = param.split('.')
       , root    = namespace.shift()
-      , formParam = root;
+      , formParam = root
 
     while(namespace.length) {
-      formParam += '[' + namespace.shift() + ']';
+      formParam += '[' + namespace.shift() + ']'
     }
     return {
       param : formParam,
       msg   : msg,
       value : value
-    };
+    }
   }
 }))
 
 var onlineUsers = []
 
 io.on('connection', (socket) => {
+
+  console.log(socket.id, ' connected')
+  // io.emit('connected', 'siker')
+
   // Get All the Users
   io.emit('userlist', onlineUsers)
   // New User Connecting..
   socket.on('addUser', (username) => {
+    // io.emit('userlist', onlineUsers)
     console.log('%s has joined the chat!', JSON.stringify(username.firstname))
     var newUser = {
       socketId: socket.id,
@@ -57,37 +60,26 @@ io.on('connection', (socket) => {
     }
     // Add User to OnlineUsers list
     onlineUsers.push(newUser)
-
     // Send New User to Client
     io.emit('connectuser', newUser)
-    // io.emit('userlist', onlineUsers)
-  })
-
-
-  socket.on('disc', () => {
-    // console.log('disconnect')
-    socket.disconnect()
-  })
-  socket.on('disconnect', () => {
-      // var username = onlineUsers[socket.id];
-      // Recalculate Online Users
-      onlineUsers = onlineUsers.filter(obj => obj.socketId !== socket.id )
-      // console.log(onlineUsers)
-      io.emit('userleft', {
-        socketId: socket.id,
-        timestamp: new Date
-      });
-      io.emit('userlist', onlineUsers)
   })
 
   socket.on('message', (data) => {
     console.log(data)
   })
-  // io.on('disconnect', (socket) => {
-  //  console.log(socket + ' disconnected')
-  //  socket.emit('disconnected')
-  // })
-});
 
-app.use('/', posts);
-app.use('/users/', users);
+  socket.on('disconnect', () => {
+    console.log(socket.id, ' disconnected')
+
+    // Recalculate Online Users
+    onlineUsers = onlineUsers.filter(obj => obj.socketId !== socket.id )
+    io.emit('userleft', {
+      socketId: socket.id,
+      timestamp: new Date
+    })
+    io.emit('userlist', onlineUsers)
+  })
+})
+
+app.use('/', posts)
+app.use('/users/', users)

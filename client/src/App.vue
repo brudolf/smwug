@@ -37,13 +37,9 @@
     methods: {
       logOut () {
         localStorage.clear()
-        if (this.$socket) {
-          this.$socket.emit('disc')
-        }
-        // delete this.$socket
-        // this.$socket.destroy()
+        this.$store.commit('userDisconnected')
+        this.$store.getters.socket.disconnect()
         auth.logout()
-        // this.$socket = {}
       },
       navToggle () {
         this.isNavOpen = !this.isNavOpen
@@ -132,7 +128,6 @@ span#toggler {
   }
 }
 
-
 .logo {
   position: absolute;
   top: 30px;
@@ -142,5 +137,4 @@ span#toggler {
   font-family: 'Shadows Into Light', cursive;
   font-size: 35px;
 }
-
 </style>
