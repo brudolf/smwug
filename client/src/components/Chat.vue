@@ -36,26 +36,27 @@ export default {
   },
   methods: {
     sendMessage () {
-      /*
-      this.$socket.emit('message', {
+      this.$store.getters.socket.emit('message', {
         username: this.loggedUser.firstname,
         message: this.message
       })
       this.message = ''
-      */
     }
   },
   created () {
     // Get Username from LocalStorage
     this.loggedUser = JSON.parse(localStorage.getItem('user'))
-    // Commit Socket instance to store
-    this.$store.commit('setSocket', io('http://localhost:8081', { autoConnect: false }))
 
     // If not Connected connect and add user to list
     if (!this.$store.getters.isUserConnected) {
+      // Commit Socket instance to store
+      this.$store.commit('setSocket', io('http://localhost:8081', { autoConnect: false }))
       this.$store.getters.socket.connect()
       this.$store.commit('userConnected')
       this.$store.getters.socket.emit('addUser', this.loggedUser)
+      this.$store.getters.socket.on('connectuser', (user) => {
+        this.$store.commit('newUserConnect', user)
+      })
     }
     // Get all the users from server
     this.users = this.$store.getters.getUserList
@@ -71,11 +72,6 @@ export default {
     }
   },
   mounted () {
-    this.$store.getters.socket.on('connectuser', (user) => {
-      console.log(user)
-      // !!!Ellenőrizni mindkét oldalon ( server, kliens ) hogy hozzá lett -e már adva a user!!!
-      this.$store.commit('newUserConnect', user)
-    })
     this.$store.getters.socket.on('userlist', (userlist) => {
       this.$store.commit('setUserList', userlist)
     })
