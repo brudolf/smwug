@@ -8,7 +8,8 @@ export const store = new Vuex.Store({
     userlist: [],
     loggedUser: {},
     connect: false,
-    socket: {}
+    socket: {},
+    posts: []
   },
   getters: {
     getUserList (state) {
@@ -19,6 +20,9 @@ export const store = new Vuex.Store({
     },
     socket (state) {
       return state.socket
+    },
+    getPosts (state) {
+      return state.posts
     }
   },
   mutations: {
@@ -39,6 +43,15 @@ export const store = new Vuex.Store({
     },
     setSocket (state, socketObject) {
       state.socket = socketObject
+    },
+    setPosts (state, posts) {
+      state.posts = posts
+    },
+    addPost (state, post) {
+      state.posts.push(post)
+    },
+    deletePost (state, id) {
+      state.posts = state.posts.filter(obj => obj._id !== id)
     }
   },
   actions: {

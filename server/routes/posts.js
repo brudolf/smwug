@@ -11,7 +11,7 @@ var jwtCheck = jwt({
 router.use('/posts', jwtCheck);
 
 router.get('/posts', (req, res) => {
-  Post.find({}, 'title description', function (error, posts) {
+  Post.find({}, 'name message', function (error, posts) {
 	  if (error) { console.error(error); }
 	  res.send({
 			posts: posts
@@ -20,12 +20,12 @@ router.get('/posts', (req, res) => {
 })
 
 router.post('/posts/add', (req, res) => {
-	var db = req.db;
-	var title = req.body.title;
-	var description = req.body.description;
+	var name = req.body.newPost.name;
+	var message = req.body.newPost.message;
 	var new_post = new Post({
-		title: title,
-		description: description
+		name: name,
+		message: message,
+		timeStamp: new Date
 	})
 
 	new_post.save(function (error) {
@@ -40,11 +40,11 @@ router.post('/posts/add', (req, res) => {
 
 router.put('/posts/:id', (req, res) => {
 	var db = req.db;
-	Post.findById(req.params.id, 'title description', function (error, post) {
+	Post.findById(req.params.id, 'name message', function (error, post) {
 	  if (error) { console.error(error); }
 
-	  post.title = req.body.title
-	  post.description = req.body.description
+	  post.name = req.body.name
+	  post.message = req.body.message
 	  post.save(function (error) {
 			if (error) {
 				console.log(error)
@@ -71,7 +71,7 @@ router.delete('/posts/:id', (req, res) => {
 
 router.get('/post/:id', (req, res) => {
 	var db = req.db;
-	Post.findById(req.params.id, 'title description', function (error, post) {
+	Post.findById(req.params.id, 'name message', function (error, post) {
 	  if (error) { console.error(error); }
 	  res.send(post)
 	})

@@ -4,7 +4,7 @@ import Chat from '@/components/Chat'
 import Posts from '@/components/Posts'
 import addpost from '@/components/AddPost'
 import editpost from '@/components/EditPost'
-import getpost from '@/components/Post'
+// import getpost from '@/components/Post'
 import login from '@/components/Login'
 import signup from '@/components/Signup'
 import home from '@/components/Home'
@@ -60,11 +60,6 @@ export default new Router({
       path: '/posts/:id/edit',
       component: editpost,
       name: 'editpost'
-    },
-    {
-      path: '/posts/:id',
-      component: getpost,
-      name: 'getpost'
     }
   ]
 })

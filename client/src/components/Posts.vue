@@ -1,29 +1,13 @@
 <template>
   <div class="posts">
-    <h1>Posts</h1>
     <div v-if="posts.length > 0" class="table-wrap">
-      <div>
-        <router-link v-bind:to="{ name: 'addpost' }" class="">Add Post</router-link>
+      <div class="post-container">
+        <!--<router-link v-bind:to="{ name: 'addpost' }" class="">Add Post</router-link>-->
+        <AddPost></AddPost>
       </div>
-      <table>
-        <tr>
-          <td>Title</td>
-          <td width="550">Description</td>
-          <td width="100" align="center">Action</td>
-        </tr>
-        <tr v-for="post in posts">
-          <td>
-            <router-link v-bind:to="{ name: 'getpost', params: { id: post._id } }">
-              {{ post.title }}
-            </router-link>
-          </td>
-          <td>{{ post.description }}</td>
-          <td align="center">
-            <router-link v-bind:to="{ name: 'editpost', params: { id: post._id } }">Edit</router-link> |
-            <a href="#" @click="deletePost(post._id)">Delete</a>
-          </td>
-        </tr>
-      </table>
+      <div v-for="post in posts" class="post-container">
+        <Post :item-data="post"></Post>
+      </div>
     </div>
     <div v-else>
       There are no posts.. Lets add one now <br /><br />
@@ -33,40 +17,45 @@
 </template>
 
 <script>
+import Post from './Post'
+import AddPost from './AddPost'
 import PostsService from '@/services/PostsService'
 import auth from '../auth'
 
 export default {
   name: 'posts',
+  components: {
+    Post,
+    AddPost
+  },
   data () {
     return {
       posts: []
     }
   },
-  mounted () {
+  created () {
     this.getPosts()
+  },
+  mounted () {
+    this.$store.watch(() => this.$store.getters.getPosts, (value) => {
+      this.posts = this.$store.getters.getPosts
+    })
+  },
+  computed: {
+    postsWatch () {
+      return this.$store.getters.getPosts
+    }
+  },
+  watch: {
+    postsWatch (newPosts, oldPost) {
+      this.posts = this.$store.getters.getPosts
+    }
   },
   methods: {
     async getPosts () {
       const response = await PostsService.fetchPosts()
-      this.posts = response.data.posts
-    },
-    async deletePost (id) {
-      const $this = this
-      $this.$swal({
-        title: 'Are you sure?',
-        text: "You won't be able to revert this!",
-        type: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Yes, delete it!'
-      }).then(function () {
-        PostsService.deletePost(id)
-        $this.$router.go({
-          path: '/'
-        })
-      })
+      this.$store.commit('setPosts', response.data.posts)
+      this.posts = this.$store.getters.getPosts
     }
   },
   beforeRouteEnter (to, from, next) {
@@ -78,39 +67,116 @@ export default {
   }
 }
 </script>
-<style type="text/css">
-.table-wrap {
-  width: 60%;
-  margin: 0 auto;
-  text-align: center;
+<style lang="scss">
+.post-container {
+  box-sizing: border-box;
+  background: #fff;
+  max-width: 800px;
+  height: auto;
+  margin: 10px 0 10px 0;
+  padding: 12px;
+  -webkit-box-shadow: 0px 0px 3px 1px rgba(0,0,0,0.21);
+  -moz-box-shadow: 0px 0px 3px 1px rgba(0,0,0,0.21);
+  box-shadow: 0px 0px 3px 1px rgba(0,0,0,0.21);
+  border-radius: 4px;
+  .main-title {
+    .title {
+      display: inline-block;
+      font-size: 20px;
+      a {
+        color: #1d2129;
+      }
+    }
+    .edit {
+      position: relative;
+      display: inline-block;
+      float: right;
+      a {
+        color: #1d2129;
+      }
+      span {
+        font-weight: bold;
+        cursor: pointer;
+        padding: 8px;
+        border-radius: 2px;
+        &:hover {
+          background: rgba(73,46,77,0.1);
+        }
+      }
+      .prop {
+        border-radius: 2px;
+        border: 1px solid rgba(73,46,77,0.1);
+        position: absolute;
+        top: 30px;
+        right: 0;
+        background: #fff;
+        display: flex;
+        justify-content: center;
+        ul {
+          margin: 0;
+          padding: 15px;
+          li {
+            list-style-type: none;
+            padding: 2px 0 2px 0;
+            &:hover {
+              color: #533557;
+            }
+          }
+        }
+
+      }
+    }
+  }
+  .message,
+  .message {
+    margin: 12px 0 12px 0;
+    padding: 12px;
+  }
+  .actions {
+    display: flex;
+    justify-content: space-around;
+    button {
+      cursor: pointer;
+      width: 400px;
+      background: transparent;
+      border: none;
+      padding-top: 8px;
+      padding-bottom: 8px;
+      &:hover,
+      &.active {
+        background: rgba(73,46,77,0.1);
+      }
+    }
+  }
+  .author {
+    display: inline-block;
+    margin-right: 10px;
+    img {
+      border-radius: 130px;
+      width: 50px;
+      height: 50px;
+    }
+  }
+  .comment-box {
+    &.open {
+      display: block;
+      opacity: 1;
+    }
+    .comment-field {
+      display: inline-block;
+      input {
+        border: none;
+        width: 300px;
+      }
+    }
+  }
 }
-table th, table tr {
-  text-align: left;
+.fade-enter-active, .fade-leave-active {
+  transition: opacity .4s;
 }
-table thead {
-  background: #f2f2f2;
+.fade-enter, .fade-leave-to {
+  opacity: 0;
+  transition: opacity 0.4s;
 }
-table tr td {
-  padding: 10px;
-}
-table tr:nth-child(odd) {
-  background: #f2f2f2;
-}
-table tr:nth-child(1) {
-  background: #4d7ef7;
-  color: #fff;
-}
-/*
-a {
-  color: #4d7ef7;
-  text-decoration: none;
-}
-a.add_post_link {
-  background: #4d7ef7;
-  color: #fff;
-  padding: 10px 80px;
-  text-transform: uppercase;
-  font-size: 12px;
-  font-weight: bold;
-}*/
+
 </style>
