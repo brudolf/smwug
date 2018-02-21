@@ -3,7 +3,8 @@ var Schema = mongoose.Schema;
 
 var PostSchema = new Schema({
   name: String,
-  message: String
+  message: String,
+  timeStamp: Number
 });
 
 var Post = mongoose.model("Post", PostSchema);

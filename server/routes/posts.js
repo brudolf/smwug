@@ -11,7 +11,7 @@ var jwtCheck = jwt({
 router.use('/posts', jwtCheck);
 
 router.get('/posts', (req, res) => {
-  Post.find({}, 'name message', function (error, posts) {
+  Post.find({}, 'name message timeStamp', function (error, posts) {
 	  if (error) { console.error(error); }
 	  res.send({
 			posts: posts
@@ -25,7 +25,7 @@ router.post('/posts/add', (req, res) => {
 	var new_post = new Post({
 		name: name,
 		message: message,
-		timeStamp: new Date
+		timeStamp: new Date()
 	})
 
 	new_post.save(function (error) {
@@ -40,11 +40,12 @@ router.post('/posts/add', (req, res) => {
 
 router.put('/posts/:id', (req, res) => {
 	var db = req.db;
-	Post.findById(req.params.id, 'name message', function (error, post) {
+	Post.findById(req.params.id, 'name message timeStamp', function (error, post) {
 	  if (error) { console.error(error); }
 
 	  post.name = req.body.name
 	  post.message = req.body.message
+		post.timeStamp = req.body.timeStamp
 	  post.save(function (error) {
 			if (error) {
 				console.log(error)

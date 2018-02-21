@@ -51,7 +51,10 @@ export const store = new Vuex.Store({
       state.posts.push(post)
     },
     deletePost (state, id) {
+      console.log(state.posts)
       state.posts = state.posts.filter(obj => obj._id !== id)
+      console.log(id)
+      console.log(state.posts)
     }
   },
   actions: {

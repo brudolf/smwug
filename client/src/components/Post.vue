@@ -68,7 +68,7 @@ export default {
       }).then(function () {
         PostsService.deletePost(id)
         $this.$store.commit('deletePost', id)
-        $this.$router.push({ name: 'Posts' })
+        // $this.$router.push({ name: 'Posts' })
         // $this.$router.go({ path: '/' })
       })
     }
