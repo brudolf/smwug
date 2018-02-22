@@ -1,10 +1,10 @@
 <template>
   <div class="posts">
+    <div class="post-container">
+      <!--<router-link v-bind:to="{ name: 'addpost' }" class="">Add Post</router-link>-->
+      <AddPost></AddPost>
+    </div>
     <div v-if="posts.length > 0" class="table-wrap">
-      <div class="post-container">
-        <!--<router-link v-bind:to="{ name: 'addpost' }" class="">Add Post</router-link>-->
-        <AddPost></AddPost>
-      </div>
       <div v-for="post in posts" class="post-container">
         <Post :item-data="post"></Post>
       </div>
@@ -56,6 +56,7 @@ export default {
       const response = await PostsService.fetchPosts()
       this.$store.commit('setPosts', response.data.posts)
       this.posts = this.$store.getters.getPosts
+      // this.getPosts()
     }
   },
   beforeRouteEnter (to, from, next) {
@@ -80,7 +81,11 @@ export default {
   box-shadow: 0px 0px 3px 1px rgba(0,0,0,0.21);
   border-radius: 4px;
   .main-title {
+
     .title {
+      margin-left: 10px;
+      line-height: 1.2;
+      vertical-align: middle;
       display: inline-block;
       font-size: 20px;
       a {
@@ -123,7 +128,6 @@ export default {
             }
           }
         }
-
       }
     }
   }
@@ -148,14 +152,16 @@ export default {
       }
     }
   }
-  .author {
+  img.author {
+    vertical-align: middle;
+    border-radius: 130px;
+    width: 50px;
+    height: 50px;
+  }
+  .date {
     display: inline-block;
     margin-right: 10px;
-    img {
-      border-radius: 130px;
-      width: 50px;
-      height: 50px;
-    }
+    font-size: 12px;
   }
   .comment-box {
     &.open {

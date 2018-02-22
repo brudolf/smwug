@@ -17,6 +17,8 @@ var io = require('socket.io').listen(server)
 const posts = require('../routes/posts')
 const users = require('../routes/users')
 
+var Message 		= require('../models/messages');
+
 
 app.use(morgan('combined'))
 app.use(bodyParser.json())
@@ -43,10 +45,6 @@ app.use(expressValidator({
 var onlineUsers = []
 
 io.on('connection', (socket) => {
-
-  console.log(socket.id, ' connected')
-  // io.emit('connected', 'siker')
-
   // Get All the Users
   io.emit('userlist', onlineUsers)
   // New User Connecting..
@@ -65,7 +63,20 @@ io.on('connection', (socket) => {
   })
 
   socket.on('message', (data) => {
-    console.log(data)
+    var message = {
+  		name: data.username,
+  		message: data.message,
+  		timeStamp: new Date()
+  	}
+
+    var new_message = new Message(message)
+    new_message.save((error) => {
+      if (error) {
+        console.log(error)
+      }
+      console.log(message)
+      io.emit('addMessage', message)
+    })
   })
 
   socket.on('disconnect', () => {

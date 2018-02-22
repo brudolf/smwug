@@ -27,7 +27,7 @@ router.post('/posts/add', (req, res) => {
 		message: message,
 		timeStamp: new Date()
 	})
-
+	console.log(new_post)
 	new_post.save(function (error) {
 		if (error) {
 			console.log(error)
@@ -39,7 +39,7 @@ router.post('/posts/add', (req, res) => {
 })
 
 router.put('/posts/:id', (req, res) => {
-	var db = req.db;
+	// var db = req.db;
 	Post.findById(req.params.id, 'name message timeStamp', function (error, post) {
 	  if (error) { console.error(error); }
 
@@ -58,7 +58,7 @@ router.put('/posts/:id', (req, res) => {
 })
 
 router.delete('/posts/:id', (req, res) => {
-	var db = req.db;
+	// var db = req.db;
 	Post.remove({
 		_id: req.params.id
 	}, function(err, post){
@@ -72,7 +72,7 @@ router.delete('/posts/:id', (req, res) => {
 
 router.get('/post/:id', (req, res) => {
 	var db = req.db;
-	Post.findById(req.params.id, 'name message', function (error, post) {
+	Post.findById(req.params.id, 'name message timeStamp', function (error, post) {
 	  if (error) { console.error(error); }
 	  res.send(post)
 	})

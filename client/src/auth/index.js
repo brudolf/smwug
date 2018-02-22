@@ -1,5 +1,6 @@
 import router from '../router'
 import UserService from '@/services/UserService'
+import { store } from '../store/store'
 
 export default {
 
@@ -16,6 +17,7 @@ export default {
       localStorage.setItem('id_token', response.data.id_token)
       localStorage.setItem('user', JSON.stringify(response.data.username))
       this.user.authenticated = true
+      store.commit('setisAuthenticated', true)
       if (redirect) {
         router.push({ name: redirect })
       }
@@ -29,8 +31,10 @@ export default {
     // var currentTime = Date.now() / 1000
     if (jwt) {
       this.user.authenticated = true
+      store.commit('setisAuthenticated', true)
     } else {
       this.user.authenticated = false
+      store.commit('setisAuthenticated', false)
     }
   },
   getAuthHeader () {
@@ -44,6 +48,7 @@ export default {
       localStorage.setItem('id_token', response.data.id_token)
       localStorage.setItem('user', JSON.stringify(response.data.username))
       this.user.authenticated = true
+      store.commit('setisAuthenticated', true)
       if (redirect) {
         router.push({ name: redirect })
       }
@@ -52,8 +57,9 @@ export default {
     }
   },
   logout () {
-    localStorage.removeItem('id_token')
+    // localStorage.removeItem('id_token')
     this.user.authenticated = false
+    store.commit('setisAuthenticated', false)
     router.push({ name: 'Login' })
   }
 }

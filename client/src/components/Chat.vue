@@ -11,6 +11,9 @@
         </b-col>
         <b-col cols="10">
           <div class="chatwindow">
+            <div class="chat-stack">
+
+            </div>
             <div class="send">
               <input type="text" v-model="message" value="">
               <button @click="sendMessage()" type="button" name="button">Send</button>
@@ -23,7 +26,7 @@
 
 <script>
 import auth from '../auth'
-import io from 'socket.io-client'
+import { store } from '../store/store'
 
 export default {
   name: 'chat',
@@ -36,7 +39,7 @@ export default {
   },
   methods: {
     sendMessage () {
-      this.$store.getters.socket.emit('message', {
+      store.getters.socket.emit('message', {
         username: this.loggedUser.firstname,
         message: this.message
       })
@@ -44,37 +47,26 @@ export default {
     }
   },
   created () {
-    // Get Username from LocalStorage
-    this.loggedUser = JSON.parse(localStorage.getItem('user'))
-
-    // If not Connected connect and add user to list
-    if (!this.$store.getters.isUserConnected) {
-      // Commit Socket instance to store
-      this.$store.commit('setSocket', io('http://localhost:8081', { autoConnect: false }))
-      this.$store.getters.socket.connect()
-      this.$store.commit('userConnected')
-      this.$store.getters.socket.emit('addUser', this.loggedUser)
-      this.$store.getters.socket.on('connectuser', (user) => {
-        this.$store.commit('newUserConnect', user)
-      })
-    }
-    // Get all the users from server
-    this.users = this.$store.getters.getUserList
+    this.loggedUser = store.getters.getLoggedUser
+    this.users = store.getters.getUserList
   },
   computed: {
     list () {
-      return this.$store.getters.getUserList
+      return store.getters.getUserList
     }
   },
   watch: {
     list (newList, oldList) {
-      this.users = this.$store.getters.getUserList
+      this.users = store.getters.getUserList
     }
   },
   mounted () {
-    this.$store.getters.socket.on('userlist', (userlist) => {
-      this.$store.commit('setUserList', userlist)
-    })
+     // store.getters.socket.on('userlist', (userlist) => {
+    //   store.commit('setUserList', userlist)
+    // })
+    // store.getters.socket.on('addMessage', (data) => {
+    //   console.log(data)
+    // })
   },
   beforeRouteEnter (to, from, next) {
     if (auth.user.authenticated) {
@@ -102,6 +94,11 @@ export default {
   height: 500px;
   background: #fff;
   position: relative;
+  .chat-stack {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+  }
   .send {
     position: absolute;
     bottom: 0;

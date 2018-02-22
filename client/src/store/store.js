@@ -1,19 +1,28 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import WebSocketPlugin from '@/store/WebSocketPlugin'
+import io from 'socket.io-client'
 
 Vue.use(Vuex)
+
+const plugin = WebSocketPlugin(io('http://localhost:8081', { autoConnect: false }))
 
 export const store = new Vuex.Store({
   state: {
     userlist: [],
+    isAuthenticated: false,
     loggedUser: {},
     connect: false,
     socket: {},
     posts: []
   },
+  plugins: [plugin],
   getters: {
     getUserList (state) {
       return state.userlist
+    },
+    getisAuthenticated (state) {
+      return state.isAuthenticated
     },
     isUserConnected (state) {
       return state.connect
@@ -23,9 +32,15 @@ export const store = new Vuex.Store({
     },
     getPosts (state) {
       return state.posts
+    },
+    getLoggedUser (state) {
+      return state.loggedUser
     }
   },
   mutations: {
+    setisAuthenticated (state, val) {
+      state.isAuthenticated = val
+    },
     setLoggedUser (state, user) {
       state.loggedUser = user
     },
@@ -39,6 +54,7 @@ export const store = new Vuex.Store({
       state.userlist.push(user)
     },
     setUserList (state, userlist) {
+      console.log(userlist)
       state.userlist = userlist
     },
     setSocket (state, socketObject) {

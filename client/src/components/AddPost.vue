@@ -2,9 +2,7 @@
   <div class="addContainer">
       <div class="form">
         <div class="main-title">
-          <div class="author">
-            <img src="http://thesundry.com/wp-content/uploads/2017/12/person-placeholder.jpg" alt="">
-          </div>
+          <img class="author" src="http://thesundry.com/wp-content/uploads/2017/12/person-placeholder.jpg" alt="">
           <div class="title">
               {{ loggedUser.firstname }}
           </div>
@@ -22,7 +20,6 @@
 <script>
 import PostsService from '@/services/PostsService'
 import auth from '../auth'
-// import Posts from './Posts'
 
 export default {
   name: 'addpost',
@@ -38,14 +35,8 @@ export default {
         name: this.loggedUser.firstname,
         message: this.message
       }
-      console.log(newPost)
       await PostsService.addPost({ newPost })
-      // Notify User: Post added
-      // this.$swal('Great!', `Your post has been added!`,'success')
-
-      this.$store.commit('addPost', newPost)
-      console.log(this.$store.getters.getPosts)
-      this.$router.push({ name: 'Posts' })
+      this.$router.go({ path: '/Posts' })
     }
   },
   created () {

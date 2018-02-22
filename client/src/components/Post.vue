@@ -1,11 +1,14 @@
 <template>
   <div class="post">
     <div class="main-title">
-      <div class="author">
-        <img src="http://thesundry.com/wp-content/uploads/2017/12/person-placeholder.jpg" alt="">
-      </div>
+      <img class="author" src="http://thesundry.com/wp-content/uploads/2017/12/person-placeholder.jpg" alt="">
       <div class="title">
-          {{ post.name }}
+        <div class="name">
+            {{ post.name }}
+        </div>
+        <div class="date">
+          {{ formatDate(post.timeStamp) }}
+        </div>
       </div>
       <div class="edit">
         <span @click="openProp = !openProp">&#8943;</span>
@@ -26,9 +29,7 @@
     </div>
     <transition name="fade">
       <div class="comment-box" v-if="isCommentBoxOpen">
-        <div class="author">
-          <img src="http://thesundry.com/wp-content/uploads/2017/12/person-placeholder.jpg" alt="">
-        </div>
+        <img class="author" src="http://thesundry.com/wp-content/uploads/2017/12/person-placeholder.jpg" alt="">
         <div class="comment-field">
           <input type="text" placeholder="Place your Comment here.." value="">
         </div>
@@ -55,6 +56,12 @@ export default {
     commentBoxToggle () {
       this.isCommentBoxOpen = !this.isCommentBoxOpen
     },
+    formatDate (date) {
+      date = date.replace('T', ' ')
+      date = date.replace('Z', '')
+      date = date.substring(0, date.indexOf('.'))
+      return date
+    },
     async deletePost (id) {
       const $this = this
       $this.$swal({
@@ -68,8 +75,6 @@ export default {
       }).then(function () {
         PostsService.deletePost(id)
         $this.$store.commit('deletePost', id)
-        // $this.$router.push({ name: 'Posts' })
-        // $this.$router.go({ path: '/' })
       })
     }
   },

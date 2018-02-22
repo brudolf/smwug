@@ -38,7 +38,7 @@
       logOut () {
         localStorage.clear()
         this.$store.commit('userDisconnected')
-        this.$store.getters.socket.disconnect()
+        // this.$store.getters.socket.disconnect()
         auth.logout()
       },
       navToggle () {
