@@ -62,13 +62,20 @@ io.on('connection', (socket) => {
     io.emit('connectuser', newUser)
   })
 
+  socket.on('getAllMessage', () => {
+
+    Message.find({}, 'name message timeStamp', function (error, messages) {
+  	  if (error) { console.error(error); }
+        io.emit('allMessage', messages)
+  	}).sort({_id:-1})
+  })
+
   socket.on('message', (data) => {
     var message = {
   		name: data.username,
   		message: data.message,
   		timeStamp: new Date()
   	}
-
     var new_message = new Message(message)
     new_message.save((error) => {
       if (error) {
@@ -81,7 +88,6 @@ io.on('connection', (socket) => {
 
   socket.on('disconnect', () => {
     console.log(socket.id, ' disconnected')
-
     // Recalculate Online Users
     onlineUsers = onlineUsers.filter(obj => obj.socketId !== socket.id )
     io.emit('userleft', {

@@ -12,7 +12,9 @@
         <b-col cols="10">
           <div class="chatwindow">
             <div class="chat-stack">
-
+              <ul>
+                <li v-for="message in messages">{{ message.name }}: {{ message.message }}</li>
+              </ul>
             </div>
             <div class="send">
               <input type="text" v-model="message" value="">
@@ -34,7 +36,8 @@ export default {
     return {
       message: '',
       users: [],
-      loggedUser: ''
+      loggedUser: '',
+      messages: []
     }
   },
   methods: {
@@ -51,17 +54,34 @@ export default {
     this.users = store.getters.getUserList
   },
   computed: {
-    list () {
+    userList () {
       return store.getters.getUserList
+    },
+    messagesList () {
+      return store.getters.getMessages
     }
   },
   watch: {
-    list (newList, oldList) {
+    userList (newList, oldList) {
       this.users = store.getters.getUserList
+    },
+    messagesList (newMessagesList, oldMessagesList) {
+      this.messages = store.getters.getMessages
     }
   },
   mounted () {
-     // store.getters.socket.on('userlist', (userlist) => {
+    store.getters.socket.emit('getAllMessage')
+    store.getters.socket.on('allMessage', (messages) => {
+      // console.log(messages)
+      store.commit('setMessages', messages)
+    })
+    this.messages = store.getters.getMessages
+    store.getters.socket.on('addMessage', (message) => {
+      // console.log(message)
+      store.commit('addMessage', message)
+    })
+    // console.log(this.messages)
+    // store.getters.socket.on('userlist', (userlist) => {
     //   store.commit('setUserList', userlist)
     // })
     // store.getters.socket.on('addMessage', (data) => {
@@ -78,6 +98,9 @@ export default {
 }
 </script>
 <style lang="scss">
+
+$purple: #533557;
+
 .row {
   //border: 1px solid black;
   .col-10 {
@@ -88,6 +111,25 @@ export default {
   height: 500px;
   background: #fff;
   border-radius: 3px;
+  padding-bottom: 10px;
+  ul {
+    margin: 0;
+    padding: 0;
+    text-align: center;
+    li {
+      cursor: pointer;
+      margin-top: 1px;
+      padding: 10px;
+      list-style-type: none;
+      background: rgba(73,46,77,0.1);
+      color: $purple;
+
+      &:hover {
+        background: $purple;
+        color: #fff;
+      }
+    }
+  }
 }
 .chatwindow {
   border-radius: 3px;
@@ -98,6 +140,19 @@ export default {
     width: 100%;
     height: 100%;
     overflow: hidden;
+    ul {
+      margin: 10px;
+      padding: 0;
+      li {
+        display: table;
+        margin: 2px;
+        padding: 2px 12px;
+        background: $purple;
+        border-radius: 10px;
+        color: #fff;
+        list-style-type: none;
+      }
+    }
   }
   .send {
     position: absolute;
@@ -106,10 +161,17 @@ export default {
     left: 0;
     width: 100%;
     input[type=text] {
-      width: 80%;
+      width: 90%;
+      border: none;
+      border-top: 1px solid $purple;
     }
     button {
-      width: auto;
+      cursor: pointer;
+      height: 100%;
+      width: 9%;
+      background: $purple;
+      border: none;
+      color: #fff;
     }
   }
 }

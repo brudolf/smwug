@@ -14,7 +14,8 @@ export const store = new Vuex.Store({
     loggedUser: {},
     connect: false,
     socket: {},
-    posts: []
+    posts: [],
+    messages: []
   },
   plugins: [plugin],
   getters: {
@@ -35,6 +36,9 @@ export const store = new Vuex.Store({
     },
     getLoggedUser (state) {
       return state.loggedUser
+    },
+    getMessages (state) {
+      return state.messages.slice().reverse()
     }
   },
   mutations: {
@@ -54,7 +58,7 @@ export const store = new Vuex.Store({
       state.userlist.push(user)
     },
     setUserList (state, userlist) {
-      console.log(userlist)
+      // console.log(userlist)
       state.userlist = userlist
     },
     setSocket (state, socketObject) {
@@ -67,10 +71,16 @@ export const store = new Vuex.Store({
       state.posts.push(post)
     },
     deletePost (state, id) {
-      console.log(state.posts)
+      // console.log(state.posts)
       state.posts = state.posts.filter(obj => obj._id !== id)
-      console.log(id)
-      console.log(state.posts)
+      // console.log(id)
+      // console.log(state.posts)
+    },
+    setMessages (state, messages) {
+      state.messages = messages
+    },
+    addMessage (state, message) {
+      state.messages.unshift(message)
     }
   },
   actions: {

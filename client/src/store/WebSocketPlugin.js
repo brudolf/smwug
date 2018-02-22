@@ -8,7 +8,7 @@ export default function WebSocketPlugin (socket) {
       store.commit('newUserConnect', user)
     })
     store.subscribe(mutation => {
-      console.log(mutation)
+      // console.log(mutation)
       if (mutation.type === 'setisAuthenticated' && mutation.payload === true && !isConnected) {
         store.commit('setSocket', socket)
         socket.connect()

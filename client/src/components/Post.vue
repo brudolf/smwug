@@ -74,7 +74,8 @@ export default {
         confirmButtonText: 'Yes, delete it!'
       }).then(function () {
         PostsService.deletePost(id)
-        $this.$store.commit('deletePost', id)
+        // $this.$store.commit('deletePost', id)
+        $this.$router.go({ path: '/Posts' })
       })
     }
   },
