@@ -58,7 +58,6 @@ export const store = new Vuex.Store({
       state.userlist.push(user)
     },
     setUserList (state, userlist) {
-      // console.log(userlist)
       state.userlist = userlist
     },
     setSocket (state, socketObject) {
@@ -68,13 +67,10 @@ export const store = new Vuex.Store({
       state.posts = posts
     },
     addPost (state, post) {
-      state.posts.push(post)
+      state.posts.unshift(post)
     },
-    deletePost (state, id) {
-      // console.log(state.posts)
-      state.posts = state.posts.filter(obj => obj._id !== id)
-      // console.log(id)
-      // console.log(state.posts)
+    deletePost (state, post) {
+      state.posts = state.posts.filter(obj => obj._id !== post._id)
     },
     setMessages (state, messages) {
       state.messages = messages

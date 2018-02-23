@@ -40,7 +40,7 @@
 
 <script>
 import auth from '../auth'
-import PostsService from '@/services/PostsService'
+import { store } from '../store/store'
 
 export default {
   props: ['itemData'],
@@ -72,10 +72,9 @@ export default {
         confirmButtonColor: '#3085d6',
         cancelButtonColor: '#d33',
         confirmButtonText: 'Yes, delete it!'
-      }).then(function () {
-        PostsService.deletePost(id)
-        // $this.$store.commit('deletePost', id)
-        $this.$router.go({ path: '/Posts' })
+      }).then(() => {
+        console.log(id)
+        store.getters.socket.emit('delPost', id)
       })
     }
   },

@@ -17,8 +17,8 @@ var io = require('socket.io').listen(server)
 const posts = require('../routes/posts')
 const users = require('../routes/users')
 
-var Message 		= require('../models/messages');
-
+var Message = require('../models/messages');
+var Post 		= require('../models/post');
 
 app.use(morgan('combined'))
 app.use(bodyParser.json())
@@ -45,6 +45,7 @@ app.use(expressValidator({
 var onlineUsers = []
 
 io.on('connection', (socket) => {
+  // --------------------------------------User Connect--------------------------------------
   // Get All the Users
   io.emit('userlist', onlineUsers)
   // New User Connecting..
@@ -61,10 +62,11 @@ io.on('connection', (socket) => {
     // Send New User to Client
     io.emit('connectuser', newUser)
   })
+  // ------------------------------------------------------------------------------------------
 
+  // --------------------------Handling Chat Messages------------------------------------------
   socket.on('getAllMessage', () => {
-
-    Message.find({}, 'name message timeStamp', function (error, messages) {
+    Message.find({}, '_id name message timeStamp', (error, messages) => {
   	  if (error) { console.error(error); }
         io.emit('allMessage', messages)
   	}).sort({_id:-1})
@@ -82,10 +84,46 @@ io.on('connection', (socket) => {
         console.log(error)
       }
       console.log(message)
-      io.emit('addMessage', message)
+      io.emit('addMessage', new_message)
+    })
+  })
+  // ------------------------------------------------------------------------------------------
+
+  // --------------------------------------Handling Posts--------------------------------------
+
+  socket.on('getAllPosts', () => {
+    Post.find({}, '_id name message timeStamp',(error, messages) => {
+      if (error) { console.error(error); }
+        io.emit('allPosts', messages)
+    }).sort({timeStamp:-1})
+  })
+  // Add Post
+  socket.on('post', (data) => {
+    var post = {
+  		name: data.name,
+  		message: data.message,
+  		timeStamp: new Date()
+  	}
+    var new_post = new Post(post)
+    new_post.save((error) => {
+      if (error) {
+        console.log(error)
+      }
+      console.log(new_post)
+      io.emit('addPost', new_post)
+    })
+  })
+  // Delete Post
+
+  socket.on('delPost', (id) => {
+    Post.find({ _id: id },'_id name message timeStamp',(err, post) => {
+      Post.remove({ _id: id },(err, success) => {
+        io.emit('deletePost', post[0])
+      })
     })
   })
 
+  // --------------------------------------User Disconnect-------------------------------------
   socket.on('disconnect', () => {
     console.log(socket.id, ' disconnected')
     // Recalculate Online Users
@@ -96,6 +134,7 @@ io.on('connection', (socket) => {
     })
     io.emit('userlist', onlineUsers)
   })
+  // --------------------------------------------------------------------------------------------
 })
 
 app.use('/', posts)

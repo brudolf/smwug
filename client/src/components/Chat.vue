@@ -70,23 +70,11 @@ export default {
     }
   },
   mounted () {
-    store.getters.socket.emit('getAllMessage')
-    store.getters.socket.on('allMessage', (messages) => {
-      // console.log(messages)
-      store.commit('setMessages', messages)
-    })
-    this.messages = store.getters.getMessages
     store.getters.socket.on('addMessage', (message) => {
-      // console.log(message)
       store.commit('addMessage', message)
     })
-    // console.log(this.messages)
-    // store.getters.socket.on('userlist', (userlist) => {
-    //   store.commit('setUserList', userlist)
-    // })
-    // store.getters.socket.on('addMessage', (data) => {
-    //   console.log(data)
-    // })
+    this.users = store.getters.getUserList
+    this.messages = store.getters.getMessages
   },
   beforeRouteEnter (to, from, next) {
     if (auth.user.authenticated) {

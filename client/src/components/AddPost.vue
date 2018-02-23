@@ -18,8 +18,8 @@
 </template>
 
 <script>
-import PostsService from '@/services/PostsService'
 import auth from '../auth'
+import { store } from '../store/store'
 
 export default {
   name: 'addpost',
@@ -35,12 +35,11 @@ export default {
         name: this.loggedUser.firstname,
         message: this.message
       }
-      await PostsService.addPost({ newPost })
-      this.$router.go({ path: '/Posts' })
+      store.getters.socket.emit('post', newPost)
     }
   },
   created () {
-    this.loggedUser = JSON.parse(localStorage.getItem('user'))
+    this.loggedUser = store.getters.getLoggedUser
   },
   beforeRouteEnter (to, from, next) {
     if (auth.user.authenticated) {
@@ -52,6 +51,9 @@ export default {
 }
 </script>
 <style type="text/css">
+.post {
+  max-width: 800px;
+}
 .form input, .form textarea {
   width: 100%;
   border: 1px solid #e0dede;

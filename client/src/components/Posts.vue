@@ -1,17 +1,12 @@
 <template>
   <div class="posts">
     <div class="post-container">
-      <!--<router-link v-bind:to="{ name: 'addpost' }" class="">Add Post</router-link>-->
       <AddPost></AddPost>
     </div>
     <div v-if="posts.length > 0" class="table-wrap">
-      <div v-for="post in posts" class="post-container">
+      <div v-for="(post, index) in posts" class="post-container" :key="post._id">
         <Post :item-data="post"></Post>
       </div>
-    </div>
-    <div v-else>
-      There are no posts.. Lets add one now <br /><br />
-      <router-link v-bind:to="{ name: 'addpost' }" class="add_post_link">Add Post</router-link>
     </div>
   </div>
 </template>
@@ -19,7 +14,7 @@
 <script>
 import Post from './Post'
 import AddPost from './AddPost'
-import PostsService from '@/services/PostsService'
+import { store } from '../store/store'
 import auth from '../auth'
 
 export default {
@@ -34,30 +29,32 @@ export default {
     }
   },
   created () {
-    this.getPosts()
+    this.posts = store.getters.getPosts
   },
   mounted () {
-    this.$store.watch(() => this.$store.getters.getPosts, (value) => {
-      this.posts = this.$store.getters.getPosts
-    })
+    console.log(this.posts)
+    this.posts = store.getters.getPosts
   },
   computed: {
     postsWatch () {
-      return this.$store.getters.getPosts
+      return store.getters.getPosts
+    },
+    reverse () {
+      return store.getters.getPosts.reverse()
     }
   },
   watch: {
     postsWatch (newPosts, oldPost) {
-      this.posts = this.$store.getters.getPosts
+      this.posts = store.getters.getPosts
     }
   },
   methods: {
-    async getPosts () {
-      const response = await PostsService.fetchPosts()
-      this.$store.commit('setPosts', response.data.posts)
-      this.posts = this.$store.getters.getPosts
-      // this.getPosts()
-    }
+    // async getPosts () {
+    //   const response = await PostsService.fetchPosts()
+    //   store.commit('setPosts', response.data.posts)
+    //   this.posts = store.getters.getPosts
+    //   // this.getPosts()
+    // }
   },
   beforeRouteEnter (to, from, next) {
     if (auth.user.authenticated) {
