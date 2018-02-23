@@ -73,7 +73,6 @@ export default {
         cancelButtonColor: '#d33',
         confirmButtonText: 'Yes, delete it!'
       }).then(() => {
-        console.log(id)
         store.getters.socket.emit('delPost', id)
       })
     }

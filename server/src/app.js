@@ -91,12 +91,14 @@ io.on('connection', (socket) => {
 
   // --------------------------------------Handling Posts--------------------------------------
 
+  // Get Posts
   socket.on('getAllPosts', () => {
     Post.find({}, '_id name message timeStamp',(error, messages) => {
       if (error) { console.error(error); }
         io.emit('allPosts', messages)
     }).sort({timeStamp:-1})
   })
+
   // Add Post
   socket.on('post', (data) => {
     var post = {
@@ -113,8 +115,8 @@ io.on('connection', (socket) => {
       io.emit('addPost', new_post)
     })
   })
-  // Delete Post
 
+  // Delete Post
   socket.on('delPost', (id) => {
     Post.find({ _id: id },'_id name message timeStamp',(err, post) => {
       Post.remove({ _id: id },(err, success) => {

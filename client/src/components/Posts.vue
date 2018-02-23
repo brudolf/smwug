@@ -32,7 +32,6 @@ export default {
     this.posts = store.getters.getPosts
   },
   mounted () {
-    console.log(this.posts)
     this.posts = store.getters.getPosts
   },
   computed: {

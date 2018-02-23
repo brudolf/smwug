@@ -35,8 +35,9 @@ export default function WebSocketPlugin (socket) {
         })
       }
       if (mutation.type === 'setisAuthenticated' && mutation.payload === false) {
-        store.commit('userDisconnected')
         socket.disconnect()
+        store.commit('userDisconnected')
+        store.commit('clearStore')
         isConnected = false
       }
     })
