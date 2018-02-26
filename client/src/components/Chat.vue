@@ -11,13 +11,13 @@
         </b-col>
         <b-col cols="10">
           <div class="chatwindow">
-            <div class="chat-stack">
+            <div class="chat-stack" id="chat-cont">
               <ul>
                 <li v-for="message in messages">{{ message.name }}: {{ message.message }}</li>
               </ul>
             </div>
             <div class="send">
-              <input type="text" v-model="message" value="">
+              <input type="text" v-model="message" v-on:keyup="hitEnter">
               <button @click="sendMessage()" type="button" name="button">Send</button>
             </div>
           </div>
@@ -47,6 +47,15 @@ export default {
         message: this.message
       })
       this.message = ''
+    },
+    hitEnter (e) {
+      if (e.keyCode === 13) {
+        this.sendMessage()
+      }
+    },
+    scrollToEnd () {
+      var container = this.$el.querySelector('#chat-cont')
+      container.scrollTop = container.scrollHeight
     }
   },
   created () {
@@ -67,6 +76,9 @@ export default {
     },
     messagesList (newMessagesList, oldMessagesList) {
       this.messages = store.getters.getMessages
+      this.$nextTick(() => {
+        this.scrollToEnd()
+      })
     }
   },
   mounted () {
@@ -75,6 +87,9 @@ export default {
     })
     this.users = store.getters.getUserList
     this.messages = store.getters.getMessages
+    this.$nextTick(() => {
+      this.scrollToEnd()
+    })
   },
   beforeRouteEnter (to, from, next) {
     if (auth.user.authenticated) {
@@ -121,13 +136,13 @@ $purple: #533557;
 }
 .chatwindow {
   border-radius: 3px;
-  height: 500px;
+  height: 471px;
   background: #fff;
   position: relative;
   .chat-stack {
     width: 100%;
     height: 100%;
-    overflow: hidden;
+    overflow-y: scroll;
     ul {
       margin: 10px;
       padding: 0;
@@ -143,12 +158,14 @@ $purple: #533557;
     }
   }
   .send {
+    border-radius: 3px;
     position: absolute;
-    bottom: 0;
+    bottom: -30px;
     right: 0;
     left: 0;
     width: 100%;
     input[type=text] {
+      border-radius: 3px;
       width: 90%;
       border: none;
       border-top: 1px solid $purple;
