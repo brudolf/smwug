@@ -77,13 +77,6 @@ export const store = new Vuex.Store({
     },
     addMessage (state, message) {
       state.messages.unshift(message)
-    },
-    clearStore (state) {
-      state.userlist = []
-      state.message = []
-      state.post = []
-      state.socket = {}
-      console.log(state)
     }
   },
   actions: {

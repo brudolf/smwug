@@ -8,18 +8,18 @@ export default function WebSocketPlugin (socket) {
       store.commit('newUserConnect', user)
     })
     store.subscribe(mutation => {
-      // console.log(mutation)
       if (mutation.type === 'setisAuthenticated' && mutation.payload === true && !isConnected) {
-        store.commit('setSocket', socket)
         socket.connect()
+        store.commit('setSocket', socket)
         // Load User to store
         store.commit('userConnected')
         store.commit('setLoggedUser', JSON.parse(localStorage.getItem('user')))
         socket.emit('addUser', store.getters.getLoggedUser)
-        isConnected = true
+
         // Load Messages to store
         store.getters.socket.emit('getAllMessage')
         store.getters.socket.on('allMessage', (messages) => {
+          console.log(store.getters.getUserList)
           store.commit('setMessages', messages)
         })
         // Load Posts to store
@@ -33,11 +33,18 @@ export default function WebSocketPlugin (socket) {
         store.getters.socket.on('deletePost', (post) => {
           store.commit('deletePost', post)
         })
+        isConnected = true
       }
-      if (mutation.type === 'setisAuthenticated' && mutation.payload === false) {
-        socket.disconnect()
+      if (mutation.type === 'setisAuthenticated' && mutation.payload === false && isConnected) {
         store.commit('userDisconnected')
-        store.commit('clearStore')
+        socket.disconnect()
+        socket.off('allMessage')
+        socket.off('allPosts')
+        socket.off('deletePost')
+        socket.off('addMessage')
+        // store.getters.socket.destroy()
+        // store.getters.socket.disconnect()
+        console.log('disconnected')
         isConnected = false
       }
     })

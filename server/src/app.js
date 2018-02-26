@@ -66,9 +66,11 @@ io.on('connection', (socket) => {
 
   // --------------------------Handling Chat Messages------------------------------------------
   socket.on('getAllMessage', () => {
+    console.log(Object.keys(io.sockets.sockets))
     Message.find({}, '_id name message timeStamp', (error, messages) => {
   	  if (error) { console.error(error); }
         io.emit('allMessage', messages)
+        console.log('that one')
   	}).sort({_id:-1})
   })
 
