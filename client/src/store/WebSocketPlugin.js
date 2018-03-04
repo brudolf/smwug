@@ -19,9 +19,14 @@ export default function WebSocketPlugin (socket) {
         // Load Messages to store
         store.getters.socket.emit('getAllMessage')
         store.getters.socket.on('allMessage', (messages) => {
-          console.log(store.getters.getUserList)
           store.commit('setMessages', messages)
         })
+
+        store.getters.socket.on('addMessage', (message) => {
+          console.log('new message listener: ', message)
+          store.commit('addMessage', message)
+        })
+
         // Load Posts to store
         store.getters.socket.emit('getAllPosts')
         store.getters.socket.on('allPosts', (posts) => {
@@ -40,6 +45,7 @@ export default function WebSocketPlugin (socket) {
         socket.disconnect()
         socket.off('allMessage')
         socket.off('allPosts')
+        socket.off('addPost')
         socket.off('deletePost')
         socket.off('addMessage')
         // store.getters.socket.destroy()

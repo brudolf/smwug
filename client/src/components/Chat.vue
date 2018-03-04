@@ -82,9 +82,6 @@ export default {
     }
   },
   mounted () {
-    store.getters.socket.on('addMessage', (message) => {
-      store.commit('addMessage', message)
-    })
     this.users = store.getters.getUserList
     this.messages = store.getters.getMessages
     this.$nextTick(() => {
